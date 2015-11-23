@@ -34,6 +34,7 @@ function preload() {
   network = loadJSON('assets/json/london-underground.json');
 }
 
+
 /*
 * only executed once
 */
@@ -75,13 +76,16 @@ function setup(){
   zonesUniq = uniq(zonesTrimmed);
 
 
+
+
   // create column for "name"
   for (var i = 0; i < name.length; i++) {
     entryName[i] = new Entry(
       wWidth/7, 
       yNameMove, 
       c.height/(name.length + 4),
-      name[i]
+      name[i],
+      lines[i]
     );
     entryName[i].show();
 
@@ -141,17 +145,28 @@ function uniq(a) {
 /*
 * Entry constructor
 */
-var Entry = function(xPos, yPos, height, txt) {
+var Entry = function(xPos, yPos, height, txt, connector) {
   this.xPos = xPos;
   this.yPos = yPos;
   this.width = wWidth/7;
   this.height = height;
   this.txt = txt;
+  this.connector = connector;
   // this.height = (bodyHeight/14*12) / total;
   // this.total = total;
 };
 
 Entry.prototype.show = function() {
+  this.createPrimitives();
+  this.createConnections();
+  // text(
+  //   this.txt,
+  //   this.xPos+2,
+  //   this.height/4
+  // );
+};
+
+Entry.prototype.createPrimitives = function() {
   // noStroke();
   stroke(h,s,b,a);
   fill(h2,s2,b2,a2);
@@ -159,9 +174,15 @@ Entry.prototype.show = function() {
     this.xPos, this.yPos,
     this.width, this.height
   );
-  // text(
-  //   this.txt,
-  //   this.xPos+2,
-  //   this.height/4
-  // );
-};
+}
+
+Entry.prototype.createConnections = function() {
+  stroke(h2,s2,b2,a2);
+  noFill();
+  bezier(
+    this.xPos + this.width, this.yPos + this.height/2,
+    this.xPos + this.width + this.width/2, this.yPos + this.height/2,
+    this.xPos + this.width*2, this.yPos*2 + this.height,
+    this.xPos + this.width*2 + this.width/2, this.yPos*2 + this.height
+  );
+}
