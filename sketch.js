@@ -47,11 +47,14 @@ function setup(){
     zones.push(stations[key].zones);
   }
 
-  // remove duplicate entriey in arrays
-  linesUniq = uniq(lines);
-  zonesUniq = uniq(zones);
+  // remove duplicate entries in arrays
+  var linesTrimmed = lines.sort().join(',').replace(/(^\s+|\s+$)/g, '').split(',');
+  var zonesTrimmed = zones.sort().join(',').replace(/(^\s+|\s+$)/g, '').split(',');
+  linesUniq = uniq(linesTrimmed);
+  zonesUniq = uniq(zonesTrimmed);
 
-  console.log(linesUniq);
+
+  console.log(zonesUniq);
 }
 
 
