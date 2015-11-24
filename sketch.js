@@ -22,20 +22,23 @@ var entryName = [],
     entryLines = [],
     entryZones = [];
 
+// height for entries
+var entryHeight = 20;
 
 var divisionColumn = windowWidth/7,
-    divisionRow = windowHeight/28;
+    marginTop = 50;
 
 // vertical starting position
-var yMoveName = divisionRow,
-    yMoveLines = divisionRow,
-    yMoveZones = divisionRow;
+var yMoveName = marginTop,
+    yMoveLines = marginTop,
+    yMoveZones = marginTop;
 
 /*
 * preload
 */
 function preload() {
   network = loadJSON('assets/json/london-underground.json');
+  // network = loadJSON('assets/json/london-underground.json');
 }
 
 
@@ -64,8 +67,15 @@ function setup(){
     zones.push(stations[key].zones);
   }
 
+  if (marginTop+(entryHeight*name.length) <= windowHeight) {
+    var canvasHeight = windowHeight;
+  } 
+  else {
+    var canvasHeight = marginTop*2+(entryHeight*name.length);
+  }
+
   // create canvas
-  var c = createCanvas(windowWidth, divisionRow*name.length);
+  var c = createCanvas(windowWidth, canvasHeight);
       c.parent("container");
 
   // rectangle/background
@@ -79,18 +89,19 @@ function setup(){
   linesUniq = uniq(linesTrimmed);
   zonesUniq = uniq(zonesTrimmed);
 
-  // height for entries
-  var entryHeight = c.height/(name.length + 4);
+  // var entryHeight = c.height/(name.length + 4);
 
 
   // create column for "name"
+  // function(xPos, yPos, height, parent, children, childrenUnique) {}
   for (var i = 0; i < name.length; i++) {
     entryName[i] = new Entry(
       divisionColumn, 
       yMoveName, 
       entryHeight,
       name[i],
-      lines[i]
+      lines[i],
+      linesUniq
     );
     entryName[i].show();
 
@@ -99,12 +110,15 @@ function setup(){
 
 
   // create column for "lines"
+  // function(xPos, yPos, height, parent, children, childrenUnique) {}
   for (var i = 0; i < linesUniq.length; i++) {
     entryLines[i] = new Entry(
       divisionColumn*3, 
       yMoveLines, 
       entryHeight,
-      linesUniq[i]
+      linesUniq[i],
+      zones[i],
+      zonesUniq
     );
     entryLines[i].show();
 
@@ -113,6 +127,7 @@ function setup(){
 
 
   // create column for "zones"
+  // function(xPos, yPos, height, parent, children, childrenUnique) {}
   for (var i = 0; i < zonesUniq.length; i++) {
     entryZones[i] = new Entry(
       divisionColumn*5, 
@@ -125,7 +140,9 @@ function setup(){
     yMoveZones += entryLines[i].height;
   }
 
-  console.log(linesUniq);
+
+  console.log(canvasHeight + ' ' + windowHeight);
+  // console.log(entryName[0].children);
 }
 
 
@@ -152,13 +169,14 @@ function uniq(array) {
 /*
 * Entry constructor
 */
-var Entry = function(xPos, yPos, height, parent='', children) {
+var Entry = function(xPos, yPos, height, parent, children, childrenUnique) {
   this.xPos = xPos;
   this.yPos = yPos;
   this.width = divisionColumn;
   this.height = height;
   this.parent = parent;
   this.children = children;
+  this.childrenUnique = childrenUnique;
 };
 
 Entry.prototype.show = function() {
@@ -178,22 +196,41 @@ Entry.prototype.addPrimitives = function() {
 };
 
 Entry.prototype.addConnections = function() {
-  if (this.children) {
-    stroke(h2,s2+20,b2,a2);
+  var parent = this.parent,
+      child = this.children,
+      childUnique = this.childrenUnique,
+      childIdx = [];
+
+  if (child) {
+    stroke(h2,s2,b2,a2);
     noFill();
-    bezier(
-      this.xPos + this.width, this.yPos + this.height/2,
-      this.xPos + this.width + this.width/2, this.yPos + this.height/2,
-      this.xPos + this.width + this.width/2, this.yPos*2 + this.height,
-      this.xPos + this.width*2, this.yPos*2 + this.height
-    );
+
+    // for (var p = 0; p < parent.length; p++) {
+    // }
+    for (var i = 0; i < child.length; i++) {
+      
+      childIdx.push(childUnique.indexOf(child[i]));
+      bezier(
+        this.xPos+this.width, this.yPos+this.height/2,
+        this.xPos+this.width+this.width/2, this.yPos+this.height/2,
+        this.xPos+this.width+this.width/2, marginTop+this.height/2+(this.height * (childIdx[i])),
+        this.xPos+this.width*2, marginTop+this.height/2+(this.height * (childIdx[i]))
+      );
+    }
+
   }
+  console.log(childIdx);
 };
 
 Entry.prototype.addText = function() {
   noStroke();
   fill(h,s,b,a);
   textSize(this.height/2);
-  var txt = this.parent;
+
+  var txt = String(this.parent);
   text(txt, this.xPos+this.width/24, this.yPos+this.height-this.height/4);
-}
+};
+
+Entry.prototype.compareEntries = function() {
+
+};
