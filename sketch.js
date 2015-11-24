@@ -71,9 +71,9 @@ function setup(){
   // rectangle/background
   background(bgrColor);
 
-  // sort, disect, trim, then put back together arrays
-  var linesTrimmed = lines.sort().join(',').replace(/(^\s+|\s+$)/g, '').split(',');
-  var zonesTrimmed = zones.sort().join(',').replace(/(^\s+|\s+$)/g, '').split(',');
+  // disect, trim, then put back together arrays
+  var linesTrimmed = lines.join(',').replace(/(^\s+|\s+$)/g, '').split(',');
+  var zonesTrimmed = zones.join(',').replace(/(^\s+|\s+$)/g, '').split(',');
 
   // remove duplicate entries in arrays
   linesUniq = uniq(linesTrimmed);
@@ -138,12 +138,12 @@ function draw(){
 
 
 /*
-* remove duplicates in arrays
+* sort, then remove duplicates in arrays
 * http://stackoverflow.com/a/9229821
 */
-function uniq(a) {
+function uniq(array) {
     var seen = {};
-    return a.filter(function(item) {
+    return array.sort().filter(function(item) {
         return seen.hasOwnProperty(item) ? false : (seen[item] = true);
     });
 }
