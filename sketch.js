@@ -152,28 +152,22 @@ function uniq(array) {
 /*
 * Entry constructor
 */
-var Entry = function(xPos, yPos, height, txt, connector) {
+var Entry = function(xPos, yPos, height, parent='', children) {
   this.xPos = xPos;
   this.yPos = yPos;
-  this.width = wWidth/7;
+  this.width = divisionColumn;
   this.height = height;
-  this.txt = txt;
-  this.connector = connector;
-  // this.height = (bodyHeight/14*12) / total;
-  // this.total = total;
+  this.parent = parent;
+  this.children = children;
 };
 
 Entry.prototype.show = function() {
-  this.createPrimitives();
-  this.createConnections();
-  // text(
-  //   this.txt,
-  //   this.xPos+2,
-  //   this.height/4
-  // );
+  this.addPrimitives();
+  this.addConnections();
+  this.addText();
 };
 
-Entry.prototype.createPrimitives = function() {
+Entry.prototype.addPrimitives = function() {
   // noStroke();
   stroke(h,s,b,a);
   fill(h2,s2,b2,a2);
@@ -181,15 +175,25 @@ Entry.prototype.createPrimitives = function() {
     this.xPos, this.yPos,
     this.width, this.height
   );
-}
+};
 
-Entry.prototype.createConnections = function() {
-  stroke(h2,s2,b2,a2);
-  noFill();
-  bezier(
-    this.xPos + this.width, this.yPos + this.height/2,
-    this.xPos + this.width + this.width/2, this.yPos + this.height/2,
-    this.xPos + this.width*2, this.yPos*2 + this.height,
-    this.xPos + this.width*2 + this.width/2, this.yPos*2 + this.height
-  );
+Entry.prototype.addConnections = function() {
+  if (this.children) {
+    stroke(h2,s2+20,b2,a2);
+    noFill();
+    bezier(
+      this.xPos + this.width, this.yPos + this.height/2,
+      this.xPos + this.width + this.width/2, this.yPos + this.height/2,
+      this.xPos + this.width + this.width/2, this.yPos*2 + this.height,
+      this.xPos + this.width*2, this.yPos*2 + this.height
+    );
+  }
+};
+
+Entry.prototype.addText = function() {
+  noStroke();
+  fill(h,s,b,a);
+  textSize(this.height/2);
+  var txt = this.parent;
+  text(txt, this.xPos+this.width/24, this.yPos+this.height-this.height/4);
 }
