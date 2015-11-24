@@ -1,0 +1,21 @@
+{
+  "description": "London Underground stations, with their lines and Travelcard zones",
+  "source": "https://en.wikipedia.org/wiki/List_of_London_Underground_stations",
+  "stations": [
+    {
+      "name": "Acton Town",
+      "lines": ["District", "Piccadilly"],
+      "zones": [3]
+    },
+    {
+      "name": "Aldgate",
+      "lines": ["Metropolitan", "Circle"],
+      "zones": [1]
+    },
+    {
+      "name": "Aldgate East",
+      "lines": ["Hammersmith & City", "District"],
+      "zones": [1]
+    }
+  ]
+}
