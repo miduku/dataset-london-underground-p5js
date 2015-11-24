@@ -37,8 +37,8 @@ var yMoveName = marginTop,
 * preload
 */
 function preload() {
+  // network = loadJSON('assets/json/london-underground-short.json');
   network = loadJSON('assets/json/london-underground.json');
-  // network = loadJSON('assets/json/london-underground.json');
 }
 
 
@@ -93,12 +93,12 @@ function setup(){
 
 
   // create column for "name"
-  // function(xPos, yPos, height, parent, children, childrenUnique) {}
+  // function(xPos, yPos, parent, parentUnique, children, childrenUnique) {}
   for (var i = 0; i < name.length; i++) {
     entryName[i] = new Entry(
       divisionColumn, 
       yMoveName, 
-      entryHeight,
+      name[i],
       name[i],
       lines[i],
       linesUniq
@@ -110,15 +110,15 @@ function setup(){
 
 
   // create column for "lines"
-  // function(xPos, yPos, height, parent, children, childrenUnique) {}
+  // function(xPos, yPos, parent, parentUnique, children, childrenUnique) {}
   for (var i = 0; i < linesUniq.length; i++) {
     entryLines[i] = new Entry(
       divisionColumn*3, 
       yMoveLines, 
-      entryHeight,
-      linesUniq[i],
-      zones[i],
-      zonesUniq
+      lines[i],     // parent       ["District", "Piccadilly"]
+      linesUniq[i], // parentUnique ["Bakerloo", "..."]
+      zones[i],     // child        ["3"]
+      zonesUniq     // chjldUnique  ["1", "2", "3", "4", "9"]
     );
     entryLines[i].show();
 
@@ -127,12 +127,12 @@ function setup(){
 
 
   // create column for "zones"
-  // function(xPos, yPos, height, parent, children, childrenUnique) {}
+  // function(xPos, yPos, parent, parentUnique, children, childrenUnique) {}
   for (var i = 0; i < zonesUniq.length; i++) {
     entryZones[i] = new Entry(
       divisionColumn*5, 
       yMoveZones, 
-      entryHeight,
+      zones[i],
       zonesUniq[i]
     );
     entryZones[i].show();
@@ -141,7 +141,8 @@ function setup(){
   }
 
 
-  console.log(canvasHeight + ' ' + windowHeight);
+  console.log(zonesUniq);
+  // console.log(Array.isArray(lines[0][0]));
   // console.log(entryName[0].children);
 }
 
@@ -169,12 +170,13 @@ function uniq(array) {
 /*
 * Entry constructor
 */
-var Entry = function(xPos, yPos, height, parent, children, childrenUnique) {
+var Entry = function(xPos, yPos, parent, parentUnique, children, childrenUnique) {
   this.xPos = xPos;
   this.yPos = yPos;
   this.width = divisionColumn;
-  this.height = height;
+  this.height = entryHeight;
   this.parent = parent;
+  this.parentUnique = parentUnique;
   this.children = children;
   this.childrenUnique = childrenUnique;
 };
@@ -197,8 +199,10 @@ Entry.prototype.addPrimitives = function() {
 
 Entry.prototype.addConnections = function() {
   var parent = this.parent,
+      parentUnique = this.parentUnique,
       child = this.children,
       childUnique = this.childrenUnique,
+      parentIdx = [],
       childIdx = [];
 
   if (child) {
@@ -207,19 +211,31 @@ Entry.prototype.addConnections = function() {
 
     // for (var p = 0; p < parent.length; p++) {
     // }
-    for (var i = 0; i < child.length; i++) {
-      
-      childIdx.push(childUnique.indexOf(child[i]));
-      bezier(
-        this.xPos+this.width, this.yPos+this.height/2,
-        this.xPos+this.width+this.width/2, this.yPos+this.height/2,
-        this.xPos+this.width+this.width/2, marginTop+this.height/2+(this.height * (childIdx[i])),
-        this.xPos+this.width*2, marginTop+this.height/2+(this.height * (childIdx[i]))
-      );
+    if (!Array.isArray(parent)) {
+      for (var i = 0; i < child.length; i++) {
+        childIdx.push(childUnique.indexOf(child[i]));
+        bezier(
+          this.xPos+this.width, this.yPos+this.height/2,
+          this.xPos+this.width+this.width/2, this.yPos+this.height/2,
+          this.xPos+this.width+this.width/2, marginTop+this.height/2+(this.height * (childIdx[i])),
+          this.xPos+this.width*2, marginTop+this.height/2+(this.height * (childIdx[i]))
+        );
+      }
     }
+    // else {
+    //   for (var i = 0; i < parent.length; i++) {
+    //     parent.push(child);
+    //     bezier(
+    //       this.xPos+this.width, this.yPos+this.height/2,
+    //       this.xPos+this.width+this.width/2, this.yPos+this.height/2,
+    //       this.xPos+this.width+this.width/2, marginTop+this.height/2+(this.height * (childIdx[i])),
+    //       this.xPos+this.width*2, marginTop+this.height/2+(this.height * (childIdx[i]))
+    //     );
+    //   console.log(parent);
+    //   }
+    // }
 
   }
-  console.log(childIdx);
 };
 
 Entry.prototype.addText = function() {
@@ -227,7 +243,7 @@ Entry.prototype.addText = function() {
   fill(h,s,b,a);
   textSize(this.height/2);
 
-  var txt = String(this.parent);
+  var txt = String(this.parentUnique);
   text(txt, this.xPos+this.width/24, this.yPos+this.height-this.height/4);
 };
 
