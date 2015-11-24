@@ -5,15 +5,15 @@ var w = window,
 
 // colors
 // light
-var h = 360,
-    s = 0,
-    b = 90,
+var h = 200,
+    s = 5,
+    b = 100,
     a = 100;
 
 // dark
-var h2 = 360,
-    s2 = 0,
-    b2 = 70,
+var h2 = 199,
+    s2 = 31,
+    b2 = 21,
     a2 = 100;
 
 var network;
@@ -206,7 +206,7 @@ Entry.prototype.addConnections = function() {
       childIdx = [];
 
   if (child) {
-    stroke(h2,s2,b2,a2);
+    stroke(h2,s2,b2,a2/4);
     noFill();
 
     // for (var p = 0; p < parent.length; p++) {
