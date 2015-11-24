@@ -1,7 +1,7 @@
 // for filling whole document
 var w = window,
-    wWidth = w.innerWidth,
-    wHeight = w.innerHeight;
+    windowWidth = w.innerWidth,
+    windowHeight = w.innerHeight;
 
 // colors
 // light
@@ -22,10 +22,14 @@ var entryName = [],
     entryLines = [],
     entryZones = [];
 
+
+var divisionColumn = windowWidth/7,
+    divisionRow = windowHeight/28;
+
 // vertical starting position
-var yNameMove = wHeight/28,
-    yLinesMove = wHeight/28,
-    yZonesMove = wHeight/28;
+var yMoveName = divisionRow,
+    yMoveLines = divisionRow,
+    yMoveZones = divisionRow;
 
 /*
 * preload
@@ -61,7 +65,7 @@ function setup(){
   }
 
   // create canvas
-  var c = createCanvas(wWidth, wHeight/28*name.length);
+  var c = createCanvas(windowWidth, divisionRow*name.length);
       c.parent("container");
 
   // rectangle/background
@@ -75,50 +79,53 @@ function setup(){
   linesUniq = uniq(linesTrimmed);
   zonesUniq = uniq(zonesTrimmed);
 
-
+  // height for entries
+  var entryHeight = c.height/(name.length + 4);
 
 
   // create column for "name"
   for (var i = 0; i < name.length; i++) {
     entryName[i] = new Entry(
-      wWidth/7, 
-      yNameMove, 
-      c.height/(name.length + 4),
+      divisionColumn, 
+      yMoveName, 
+      entryHeight,
       name[i],
       lines[i]
     );
     entryName[i].show();
 
-    yNameMove += entryName[i].height;
+    yMoveName += entryName[i].height;
   }
 
 
   // create column for "lines"
   for (var i = 0; i < linesUniq.length; i++) {
     entryLines[i] = new Entry(
-      wWidth/7*3, 
-      yLinesMove, 
-      c.height/(name.length + 4)
+      divisionColumn*3, 
+      yMoveLines, 
+      entryHeight,
+      linesUniq[i]
     );
     entryLines[i].show();
 
-    yLinesMove += entryLines[i].height;
+    yMoveLines += entryLines[i].height;
   }
 
 
   // create column for "zones"
   for (var i = 0; i < zonesUniq.length; i++) {
     entryZones[i] = new Entry(
-      wWidth/7*5, 
-      yZonesMove, 
-      c.height/(name.length + 4)
+      divisionColumn*5, 
+      yMoveZones, 
+      entryHeight,
+      zonesUniq[i]
     );
     entryZones[i].show();
 
-    yZonesMove += entryLines[i].height;
+    yMoveZones += entryLines[i].height;
   }
 
-  console.log(entryName[0]);
+  console.log(linesUniq);
 }
 
 
