@@ -16,6 +16,46 @@
       "name": "Aldgate East",
       "lines": ["Hammersmith & City", "District"],
       "zones": [1]
+    },
+    {
+      "name": "Alperton",
+      "lines": ["Piccadilly"],
+      "zones": [4]
+    },
+    {
+      "name": "Amersham",
+      "lines": ["Metropolitan"],
+      "zones": [9]
+    },
+    {
+      "name": "Angel",
+      "lines": ["Northern"],
+      "zones": [1]
+    },
+    {
+      "name": "Archway",
+      "lines": ["Northern"],
+      "zones": [2, 3]
+    },
+    {
+      "name": "Arnos Grove",
+      "lines": ["Piccadilly"],
+      "zones": [4]
+    },
+    {
+      "name": "Arsenal",
+      "lines": ["Piccadilly"],
+      "zones": [2]
+    },
+    {
+      "name": "Baker Street",
+      "lines": ["Metropolitan", "Bakerloo", "Circle", "Jubilee", "Hammersmith & City"],
+      "zones": [1]
+    },
+    {
+      "name": "Balham",
+      "lines": ["Northern"],
+      "zones": [3]
     }
   ]
 }
